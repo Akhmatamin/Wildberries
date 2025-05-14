@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 class User(AbstractUser):
-    age = models.PositiveSmallIntegerField(null=True,blank=True)
+    age = models.PositiveSmallIntegerField(validators=[MinValueValidator(16),
+                                                       MaxValueValidator(100)],null=True,blank=True)
     status_choices = (
         ('gold', 'gold'),
         ('silver', 'silver'),
@@ -48,7 +50,7 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='images')
     product_img = models.ImageField(upload_to='product_images/')
 
     def __str__(self):
