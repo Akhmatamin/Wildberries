@@ -28,7 +28,7 @@ class Category(models.Model):
         return self.category_name
 
 class SubCategory(models.Model):
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE, related_name='sub_categories')
     sub_category_name = models.CharField(max_length=40,unique=True)
 
     def __str__(self):
@@ -37,12 +37,27 @@ class SubCategory(models.Model):
 class Product(models.Model):
     product_name = models.CharField(max_length=40)
     price = models.PositiveIntegerField()
-    sub_category = models.ForeignKey(SubCategory,on_delete=models.CASCADE)
+    sub_category = models.ForeignKey(SubCategory,on_delete=models.CASCADE,related_name='products_sub_category')
     original = models.BooleanField(default=False)
     description = models.TextField()
     product_video = models.FileField(upload_to='product_videos/',null=True,blank=True)
     article_num = models.PositiveIntegerField(unique=True)
     date_added = models.DateField(auto_now_add=True)
+
+    def get_avg_rating(self):
+        reviews = self.all_reviews.all()
+        if reviews.exists():
+            return round(sum([i.rating for i in reviews ]) / len(reviews),1)
+        return 0
+
+    def get_count_user(self):
+        reviews = self.all_reviews.all()
+        if reviews.exists():
+            return reviews.count()
+        return 0
+
+
+
 
 
     def __str__(self):
@@ -58,10 +73,12 @@ class ProductImage(models.Model):
 
 class Review(models.Model): # коммент
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='all_reviews')
     rating = models.PositiveIntegerField(choices=[(i, str(i)) for i in range(1,6)])
     comment = models.TextField()
     date_added = models.DateField(auto_now_add=True)
+
+
 
     def str(self):
         return f"{self.user},{self.product}"

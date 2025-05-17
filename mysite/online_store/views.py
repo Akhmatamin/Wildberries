@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import *
-from .serializers import *
+from .serializers import (UserSerializer,ProductImageSerializer,ProductDetailSerializer,ProductListSerializer,CategoryListSerializer,
+                          CategoryDetailSerializer,CartSerializer,CartItemSerializer,SubCategoryListSerializer,ReviewSerializer,SubCategoryDetailSerializer)
 from rest_framework import viewsets,generics
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -16,13 +17,21 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     serializer_class = ProductDetailSerializer
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategoryListSerializer
 
-class SubCategoryViewSet(viewsets.ModelViewSet):
+class CategoryDetailAPIView(generics.RetrieveAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryDetailSerializer
+
+class SubCategoryListAPIView(generics.ListAPIView):
     queryset = SubCategory.objects.all()
-    serializer_class = SubCategorySerializer
+    serializer_class = SubCategoryListSerializer
+
+class SubCategoryDetailAPIView(generics.RetrieveAPIView):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategoryDetailSerializer
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
