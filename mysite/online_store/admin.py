@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 from .models import User,Category,SubCategory,Product,Review,Cart,CartItem,ProductImage
 from modeltranslation.admin import TranslationAdmin,TranslationInlineModelAdmin
 

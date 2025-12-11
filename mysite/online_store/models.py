@@ -56,10 +56,6 @@ class Product(models.Model):
             return reviews.count()
         return 0
 
-
-
-
-
     def __str__(self):
         return self.product_name
 
@@ -79,17 +75,29 @@ class Review(models.Model): # коммент
     date_added = models.DateField(auto_now_add=True)
 
 
-
     def str(self):
         return f"{self.user},{self.product}"
 
-class Cart(models.Model): #корзина
+
+class Cart(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.user}"
+
+    def get_final_price(self):
+        return sum([i.get_total_price() for i in self.items.all() ])
+
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,related_name='items')
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(default=1)
 
+
     def __str__(self):
         return f"{self.product},{self.quantity}"
+
+    def get_total_price(self):
+        return self.quantity * self.product.price
+
+
